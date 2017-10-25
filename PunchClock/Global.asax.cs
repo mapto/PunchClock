@@ -9,6 +9,10 @@ namespace PunchClock
     {
         protected void Application_Start()
         {
+            // remove XML formatter so JSON is served
+            var formatters = GlobalConfiguration.Configuration.Formatters;
+            formatters.Remove(formatters.XmlFormatter);
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

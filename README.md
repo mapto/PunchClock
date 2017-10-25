@@ -11,3 +11,5 @@ Dependencies activated in Project:
 * System.Data
 
 * Mono.Data.Sqlite
+
+* System.Runtime.Serialization

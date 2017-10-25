@@ -74,6 +74,7 @@
     </Reference>
     <Reference Include="Mono.Data.Sqlite" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />
@@ -88,6 +89,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Models\TimeModel.cs" />
+    <Compile Include="Controllers\TimeController.cs" />
+    <Compile Include="Models\ITimeModel.cs" />
+    <Compile Include="Models\Slot.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Web.config" />
