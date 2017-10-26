@@ -13,3 +13,11 @@ Dependencies activated in Project:
 * Mono.Data.Sqlite
 
 * System.Runtime.Serialization
+
+* Microsoft.AspNet.WebApi.Cors
+
+Front-end dependencies ([using npm](https://www.npmjs.com/get-npm)):
+
+* react react-dom
+
+* react-bootstrap

@@ -4,8 +4,6 @@ using PunchClock.Models;
 
 namespace PunchClock.Models
 {
-    // This is the interface for a service.
-    // TODO: Ideally should not be in Models namespace
     public interface ITimeModel : IDisposable
     {
 		IEnumerable<Slot> GetSlots();

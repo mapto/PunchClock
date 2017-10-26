@@ -15,7 +15,6 @@ namespace PunchClock
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
     }
 }

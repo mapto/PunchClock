@@ -9,12 +9,14 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Ajax;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 
 using PunchClock.Models;
 
 namespace PunchClock.Controllers
 {
+    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
     public class TimeController : ApiController
     {
         public Slot GetSlotById(long id)
@@ -32,13 +34,15 @@ namespace PunchClock.Controllers
         public HttpResponseMessage DeleteSlot(long id)
         {
             bool result = false;
-			TimeModel timeService = TimeModel.getService();
+            TimeModel timeService = TimeModel.getService();
             if (timeService.GetSlotByID(id) != null)
             {
                 result = timeService.DeleteSlot(id);
-            } else {
-				throw new HttpResponseException(HttpStatusCode.NotFound);
-			}
+            }
+            else
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
             return new HttpResponseMessage(result ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
         }
 
@@ -60,19 +64,23 @@ namespace PunchClock.Controllers
         }
 
         //public HttpResponseMessage PostSlot(NameValueCollection formData)
-		public HttpResponseMessage PostSlot(FormDataCollection formData)
-		{
-			string utcFormat = "yyyy-MM-ddTHH:mm";
-			DateTime start = DateTime.ParseExact(formData["start"], utcFormat, CultureInfo.InvariantCulture);
-			DateTime end = DateTime.ParseExact(formData["end"], utcFormat, CultureInfo.InvariantCulture);
-			string description = formData["description"];
+        public HttpResponseMessage PostSlot(FormDataCollection formData)
+        {
+            DateTime start, end;
+            bool success = true;
+            success &= DateTime.TryParse(formData["start"], out start);
+            success &= DateTime.TryParse(formData["end"], out end);
+            if (!success)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+            string description = formData["description"];
             string project = formData["project"];
 
-            bool result = false;
-			TimeModel timeService = TimeModel.getService();
-			result = timeService.InsertSlot(new Slot(start, end, description, project));
-			return new HttpResponseMessage(result ? HttpStatusCode.Created : HttpStatusCode.InternalServerError);
-		}
+            TimeModel timeService = TimeModel.getService();
+            success = timeService.InsertSlot(new Slot(start, end, description, project));
+            return new HttpResponseMessage(success ? HttpStatusCode.Created : HttpStatusCode.InternalServerError);
+        }
 
         public HttpResponseMessage PutSlot(long id, DateTime start, DateTime end, string description, string project)
         {
@@ -87,7 +95,7 @@ namespace PunchClock.Controllers
             }
             else
             {
-				result = timeService.InsertSlot(new Slot(start, end, description, project));
+                result = timeService.InsertSlot(new Slot(start, end, description, project));
                 return new HttpResponseMessage(result ? HttpStatusCode.Created : HttpStatusCode.InternalServerError);
             }
         }
