@@ -20,8 +20,8 @@ start NUMERIC,
 end NUMERIC,
 description TEXT,
 project TEXT)";
-        private const string selectAllCommand = "SELECT * FROM Slot ORDER BY id DESC";
-        private const string selectByIdCommand = "SELECT * FROM Slot WHERE id=:id";
+        private const string selectAllCommand = "SELECT id,start,end,description,project FROM Slot ORDER BY id DESC";
+        private const string selectByIdCommand = "SELECT id,start,end,description,project FROM Slot WHERE id=:id";
         private const string selectIdByDataCommand = @"SELECT id FROM Slot 
                 WHERE start=:start AND end=:end AND
                 description=:description AND project=:project

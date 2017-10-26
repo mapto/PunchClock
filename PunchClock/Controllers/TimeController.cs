@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Globalization;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
@@ -55,50 +50,36 @@ namespace PunchClock.Controllers
             return slots;
         }
 
-        public HttpResponseMessage PutSlot(DateTime start, DateTime end, string description, string project)
-        {
-            Slot slot = new Slot(start, end, description, project);
-            bool result = TimeModel.getService().InsertSlot(slot);
-
-            return new HttpResponseMessage(result ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
-        }
-
-        //public HttpResponseMessage PostSlot(NameValueCollection formData)
         public HttpResponseMessage PostSlot(FormDataCollection formData)
         {
             DateTime start, end;
+            long id;
             bool success = true;
-            success &= DateTime.TryParse(formData["start"], out start);
-            success &= DateTime.TryParse(formData["end"], out end);
+            success &= DateTime.TryParse(formData["Start"], out start);
+            success &= DateTime.TryParse(formData["End"], out end);
             if (!success)
             {
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
-            string description = formData["description"];
-            string project = formData["project"];
+            string description = formData["Description"];
+            string project = formData["Project"];
 
             TimeModel timeService = TimeModel.getService();
-            success = timeService.InsertSlot(new Slot(start, end, description, project));
-            return new HttpResponseMessage(success ? HttpStatusCode.Created : HttpStatusCode.InternalServerError);
-        }
-
-        public HttpResponseMessage PutSlot(long id, DateTime start, DateTime end, string description, string project)
-        {
-            // If slot is not pre-existing, id is ignored
-            bool result = false;
-            TimeModel timeService = TimeModel.getService();
-            Slot storedSlot = timeService.GetSlotByID(id);
+            Slot storedSlot = null;
+            if (Int64.TryParse(formData["ID"], out id))
+            {
+                storedSlot = timeService.GetSlotByID(id);
+            }
             if (storedSlot != null)
             {
-                result = timeService.UpdateSlot(new Slot(id, start, end, description, project));
-                return new HttpResponseMessage(result ? HttpStatusCode.OK : HttpStatusCode.InternalServerError);
+                success = timeService.UpdateSlot(new Slot(id, start, end, description, project));
+                return new HttpResponseMessage(success ? HttpStatusCode.OK : HttpStatusCode.InternalServerError);
             }
             else
             {
-                result = timeService.InsertSlot(new Slot(start, end, description, project));
-                return new HttpResponseMessage(result ? HttpStatusCode.Created : HttpStatusCode.InternalServerError);
+                success = timeService.InsertSlot(new Slot(start, end, description, project));
+                return new HttpResponseMessage(success ? HttpStatusCode.Created : HttpStatusCode.InternalServerError);
             }
         }
-
     }
 }

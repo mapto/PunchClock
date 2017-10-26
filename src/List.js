@@ -20,7 +20,7 @@ class ListSlots extends Component {
     $.ajax({
       url: this.props.url,
       success: function(data) {
-        this.setState({data: JSON.parse(data)});
+        this.setState({selected: "none", data: JSON.parse(data)});
       }.bind(this)
     });
   }
@@ -34,21 +34,25 @@ class ListSlots extends Component {
   }
 
   saveSlot(event) {
-    var data = event.currentTarget;
-    console.log(data);
+    var data = [];
+    // TODO: Wanted to have this via JSON for consistency, but didn't have time to experiment how WebApi delivers to back-end Controller method
+    for (var el of document.getElementsByClassName("slot-form")[0].getElementsByTagName("input")) {
+      data.push(el.name + "=" + el.value);
+    }
+    data = data.join("&");
     $.ajax({
       url: this.props.url,
       type: 'POST',
-      data: "start=2018-08-03T10%3A00%3A00&end=2018-08-03T19%3A00%3A00&description=hello&project=Test",
+      data: data,
       success: function(data) {
-        this.setState({data: JSON.parse(data)});
+        // TODO: Instead of reloading everything from server, better update item locally.
+        this.componentDidMount();
       }.bind(this)
     });
 
   }
 
   render() {
-    console.log(this.state);
     var component = this;
     var children = this.state.data.map(function(item){
       if (component.state && component.state.selected === parseInt(item.ID, 10)) {
@@ -67,9 +71,9 @@ class ListSlots extends Component {
         );
       }
     });
+
     if (this.state.selected === "new") {
-      var item = {ID: 0,Start: "2018-08-03T09:00:00",End: "2018-08-03T18:00:00",Description: "New work slot",Project: "Unspecified"};
-      console.log(item);
+      var item = {ID: 0, Start: "2018-08-03T09:00", End: "2018-08-03T18:00", Description: "New work slot", Project: "Unspecified"};
       return (
 <div>
   <ul className="list-group">      
@@ -84,7 +88,7 @@ class ListSlots extends Component {
     } else {
       return (
 <div>
-  <button onClick={this.createSlot} className="btn btn-primary btn-block">Add Time Slot</button>       
+  <button onClick={this.createSlot} className="btn btn-default btn-block">Add Time Slot</button>       
   <ul className="list-group">      
     {children}
   </ul>
