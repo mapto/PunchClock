@@ -1,0 +1,47 @@
+@import url('https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css');
+
+.container {
+  max-width: 800px;
+}
+
+.page-header {
+  background-color: #222;
+  padding: 20px;
+  color: white;
+  margin: 0 0 .5em 0;
+}
+
+.title {
+  padding-left: 1em;
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 2em;
+}
+
+.panel {
+  padding: 1em;
+  border: 1px #cff solid;
+  box-shadow: 0;
+}
+
+.form-control {
+  width: 100%;
+}
+
+.list-group-item {
+  margin: 1em 0 0 0;
+}
+
+.list-group-item:focus {
+  outline: none; 
+}
+
+.list-group-item .list-group-item-heading {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;  
+}
+
+.list-group-item.active .list-group-item-heading {
+  white-space: inherit;
+}
