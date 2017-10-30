@@ -30,6 +30,8 @@ Front-end dependencies ([using npm](https://www.npmjs.com/get-npm)):
 
 * react react-dom
 
+* react-scripts
+
 * react-bootstrap
 
 ### Database
