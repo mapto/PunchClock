@@ -195,6 +195,7 @@ project TEXT)";
 
         public bool UpdateSlot(Slot newSlot)
         {
+            // Assuming that the submitted data is different, without checking.
             bool success = true;
             if (newSlot.ID == NON_VALUE)
             {
