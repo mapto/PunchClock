@@ -43,7 +43,7 @@ In the main project directory CamelCased directories are part of the WebApi proj
 ## Requests
 The service interface is very simple. It allows getting items and creating/updating them.
 
-###GET
+### GET
 
 Request:
 
@@ -53,7 +53,7 @@ Response Content:
 
     [{"ID":36,"Start":"2018-08-03T09:00:00","End":"2018-08-03T18:00:00","Description":"Let me get a very long description to test how overflow is being handled. Viewing is fine, but expanding for editing will turn out to not have enough space. Let's see if it is really the case.","Project":"Unspecified"},{"ID":34,"Start":"2018-08-03T09:00:00","End":"2018-08-03T18:00:00","Description":"Set defaults for improved productivity","Project":"Interview"},{"ID":27,"Start":"2018-08-03T09:00:00","End":"2018-08-03T18:00:00","Description":"A third work slot","Project":"Unspecified"},{"ID":26,"Start":"2018-08-03T09:00:00","End":"2018-08-03T18:00:00","Description":"New work slot","Project":"Unspecified"},{"ID":24,"Start":"2018-08-03T10:00:00","End":"2018-08-03T19:00:00","Description":"Working, working","Project":"Test"},{"ID":18,"Start":"2018-08-03T10:00:00","End":"2018-08-03T19:00:00","Description":"Let's see if this makes it through","Project":"Test"},{"ID":7,"Start":"2018-07-03T09:00:00","End":"2018-07-03T18:00:00","Description":"Other task","Project":"Test"},{"ID":1,"Start":"2018-05-02T09:00:00","End":"2018-05-02T18:00:00","Description":"First task","Project":"Test"}]
 
-###POST
+### POST
 
 Sample create request:
 
