@@ -1,7 +1,7 @@
 # PunchClock
 
 A mock Timesheet reporting project for an interview test. It corresponds to this extremely simple use case:
-![Use-case diagram[https://github.com/mapto/PunchClock/raw/master/docs/use-case.png "The two simple required user stories, converted into use cases"].
+![Use-case diagram](https://github.com/mapto/PunchClock/raw/master/docs/use-case.png "The two simple required user stories, converted into use cases").
 
 Project developed with MonoDevelop Version 7.1 Preview (7.1 build 1291), [installed from flatpak](http://www.monodevelop.com/download/linux/). MVC, WebApi and NUnit included by default. 
 
@@ -10,7 +10,7 @@ Using [Mono.Data.Sqlite](http://www.mono-project.com/docs/database-access/provid
 For the current configuration front-end (React at port 3000) and back-end (WebApi at port 8080) need to be run independently on the same machine via the ./run-*.sh files
 
 ## Architecture
-![Structural diagram (Class and Component)[https://github.com/mapto/PunchClock/raw/master/docs/structural.png "Two class diagrams for front- and back-end, combined"]
+![Structural diagram (Class and Component)](https://github.com/mapto/PunchClock/raw/master/docs/structural.png "Two class diagrams for front- and back-end, combined")
 
 ### Back-end
 
@@ -38,7 +38,7 @@ Sqlite3 is used. A nice open source and multiplatform DB client that supports it
 
 ### File hierarchy
 
-In the main project directory CamelCased directories are part of the WebApi project. lowercased directories are part of the React project. The [docs][https://github.com/mapto/PunchClock/blob/master/docs/] contains the resources referenced in this description. The original user stories are omitted for interview anonymity reasons.
+In the main project directory CamelCased directories are part of the WebApi project. lowercased directories are part of the React project. The [docs](https://github.com/mapto/PunchClock/blob/master/docs/) contains the resources referenced in this description. The original user stories are omitted for interview anonymity reasons.
 
 ## Requests
 The service interface is very simple. It allows getting items and creating/updating them.
