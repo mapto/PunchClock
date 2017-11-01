@@ -10,30 +10,35 @@ namespace PunchClock.Models
         public static readonly long NON_VALUE = -1;
         // TODO: Find way to export this in Web.config
         public static readonly string connectionString = "URI=file:TimeStorage.db";
+
         private static SqliteConnection conn = null;
+        private static TimeModel singleton = null;
 
         // Was unable to identify a way to derive DAO mapping from code with Mono.Data.Sqlite
         public const string tableCreateCommand = @"
-CREATE TABLE IF NOT EXISTS Slot (
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-start NUMERIC,
-end NUMERIC,
-description TEXT,
-project TEXT)";
+            CREATE TABLE IF NOT EXISTS Slot (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            start NUMERIC,
+            end NUMERIC,
+            description TEXT,
+            project TEXT)";
         private const string selectAllCommand = "SELECT id,start,end,description,project FROM Slot ORDER BY id DESC";
         private const string selectByIdCommand = "SELECT id,start,end,description,project FROM Slot WHERE id=:id";
-        private const string selectIdByDataCommand = @"SELECT id FROM Slot 
-                WHERE start=:start AND end=:end AND
-                description=:description AND project=:project
-                ORDER BY id DESC LIMIT 1";
+        private const string selectIdByDataCommand = @"
+            SELECT id FROM Slot 
+            WHERE start=:start AND end=:end AND
+            description=:description AND project=:project
+            ORDER BY id DESC LIMIT 1";
         private const string deleteCommand = "DELETE FROM Slot WHERE id=:id";
-        private const string insertCommand = @"INSERT INTO Slot 
-                (start, end, description, project) 
-                VALUES(:start, :end ,:description, :project)";
-        private const string updateCommand = @"UPDATE Slot
-                SET start=:start, end=:end,
-                description=:description, project=:project
-                WHERE id=:id";
+        private const string insertCommand = @"
+            INSERT INTO Slot 
+            (start, end, description, project) 
+            VALUES(:start, :end ,:description, :project)";
+        private const string updateCommand = @"
+            UPDATE Slot
+            SET start=:start, end=:end,
+            description=:description, project=:project
+            WHERE id=:id";
 
         // This might be problematic with parallel server instances
         // Was not able to identify DBContext to work with Mono.Data.Sqlite.
@@ -58,10 +63,14 @@ project TEXT)";
 
         public static TimeModel getService()
         {
-            return new TimeModel();
+            if (singleton == null)
+            {
+                singleton = new TimeModel();               
+            }
+            return singleton;
         }
 
-        public TimeModel()
+        private TimeModel()
         {
             conn = getConnection();
             using (SqliteCommand cmd = new SqliteCommand(tableCreateCommand, conn))

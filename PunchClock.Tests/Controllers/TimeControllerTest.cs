@@ -82,7 +82,7 @@ namespace PunchClock.Tests.Controllers
                 foundSlot = c.GetSlotById(currentId);
                 Assert.Fail();
             }
-            catch (HttpResponseException hre)
+            catch (HttpResponseException)
             {
                 Assert.Pass();
             }

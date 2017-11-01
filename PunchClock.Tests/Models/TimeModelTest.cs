@@ -65,7 +65,7 @@ namespace PunchClock.Tests.Models
         public void SlotStorageData()
         {
             // Arrange
-            TimeModel timeRepository = new TimeModel();
+            TimeModel timeRepository = TimeModel.getService();
             var lastEntry = new Slot(1, new DateTime(2018, 5, 2, 9, 00, 00), new DateTime(2018, 5, 2, 18, 00, 00),
                                      "Just a timeslot", "Test");
 
@@ -83,7 +83,7 @@ namespace PunchClock.Tests.Models
         public void SlotStorageOperations()
         {
             // Arrange
-            TimeModel timeService = new TimeModel();
+            TimeModel timeService = TimeModel.getService();
             DateTime start = DateTime.Today;
             DateTime end = DateTime.Now;
             string desc = "A daily dummy job";

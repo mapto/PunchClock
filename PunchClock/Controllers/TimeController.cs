@@ -44,7 +44,7 @@ namespace PunchClock.Controllers
 
         public IEnumerable<Slot> GetSlots()
         {
-            TimeModel timeService = new TimeModel();
+            TimeModel timeService = TimeModel.getService();
             var slots = timeService.GetSlots();
 
             return slots;
