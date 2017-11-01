@@ -15,7 +15,7 @@ class App extends Component {
   <div className="row">
     <div className="panel panel-default">
       <div className="panel-body">
-        <ListSlots url="http://localhost:8080/api/Time" />
+        <ListSlots url="http://localhost:8080/api" />
       </div>
     </div>
   </div>

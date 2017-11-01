@@ -22,23 +22,36 @@ namespace PunchClock.Models
             end NUMERIC,
             description TEXT,
             project TEXT)";
-        private const string selectAllCommand = "SELECT id,start,end,description,project FROM Slot ORDER BY id DESC";
-        private const string selectByIdCommand = "SELECT id,start,end,description,project FROM Slot WHERE id=:id";
+        private const string selectAllProjectsCommand = "SELECT DISTINCT(project) FROM Slot";
+        private const string selectAllCommand = @"SELECT id,start,end,description,project FROM Slot
+                ORDER BY id DESC";
+	private const string selectByProjectCommand = @"SELECT id,start,end,description,project FROM Slot
+                WHERE project=:project ORDER BY id DESC";
+	private const string selectByDateCommand = @"SELECT id,start,end,description,project FROM Slot
+                WHERE :start <= start AND start <  :end 
+                OR    :start <= end   AND   end <  :end
+                OR    :start >= start AND   end > :end
+                ORDER BY id DESC";
+	private const string selectByProjectAndDateCommand = @"SELECT id,start,end,description,project FROM Slot
+                WHERE project=:project
+                AND :start<=start AND start<=:end 
+                OR  :start<=end   AND   end<=:end
+                OR  :start>=start AND   end>=:end
+                ORDER BY id DESC";
+	private const string selectByIdCommand = "SELECT id,start,end,description,project FROM Slot WHERE id=:id";
         private const string selectIdByDataCommand = @"
             SELECT id FROM Slot 
-            WHERE start=:start AND end=:end AND
-            description=:description AND project=:project
-            ORDER BY id DESC LIMIT 1";
+                WHERE start=:start AND end=:end AND
+                description=:description AND project=:project
+                ORDER BY id DESC LIMIT 1";
         private const string deleteCommand = "DELETE FROM Slot WHERE id=:id";
-        private const string insertCommand = @"
-            INSERT INTO Slot 
-            (start, end, description, project) 
-            VALUES(:start, :end ,:description, :project)";
-        private const string updateCommand = @"
-            UPDATE Slot
-            SET start=:start, end=:end,
-            description=:description, project=:project
-            WHERE id=:id";
+        private const string insertCommand = @"INSERT INTO Slot 
+                (start, end, description, project) 
+                VALUES(:start, :end ,:description, :project)";
+        private const string updateCommand = @"UPDATE Slot
+                SET start=:start, end=:end,
+                description=:description, project=:project
+                WHERE id=:id";
 
         // This might be problematic with parallel server instances
         // Was not able to identify DBContext to work with Mono.Data.Sqlite.
@@ -80,9 +93,25 @@ namespace PunchClock.Models
             }
         }
 
+		public IEnumerable<string> GetProjects()
+		{
+			using (SqliteCommand cmd = conn.CreateCommand())
+			{
+                cmd.CommandText = selectAllProjectsCommand;
+				using (SqliteDataReader rdr = cmd.ExecuteReader())
+				{
+					while (rdr.Read())
+					{
+						// Was unable to identify a way to automate the DAO mapping with Mono.Data.Sqlite
+						yield return rdr.GetString(rdr.GetOrdinal("project"));
+					}
+				}
+				cmd.Dispose();
+			}
+		}
+		
         public IEnumerable<Slot> GetSlots()
         {
-            List<Slot> result = new List<Slot>();
             using (SqliteCommand cmd = conn.CreateCommand())
             {
                 cmd.CommandText = selectAllCommand;
@@ -102,7 +131,76 @@ namespace PunchClock.Models
             }
         }
 
-        public Slot GetSlotByID(long id)
+		public IEnumerable<Slot> GetSlots(string project)
+		{
+			using (SqliteCommand cmd = conn.CreateCommand())
+			{
+				cmd.CommandText = selectByProjectCommand;
+				cmd.Parameters.Add(new SqliteParameter(":project", project));
+				using (SqliteDataReader rdr = cmd.ExecuteReader())
+				{
+					while (rdr.Read())
+					{
+						// Was unable to identify a way to automate the DAO mapping with Mono.Data.Sqlite
+						yield return new Slot(rdr.GetInt64(rdr.GetOrdinal("id")),
+											  rdr.GetDateTime(rdr.GetOrdinal("start")),
+											  rdr.GetDateTime(rdr.GetOrdinal("end")),
+											  rdr.GetString(rdr.GetOrdinal("description")),
+											  rdr.GetString(rdr.GetOrdinal("project")));
+					}
+				}
+				cmd.Dispose();
+			}
+		}
+
+		public IEnumerable<Slot> GetSlots(DateTime start, DateTime end)
+		{
+			using (SqliteCommand cmd = conn.CreateCommand())
+			{
+				cmd.CommandText = selectByDateCommand;
+				cmd.Parameters.Add(new SqliteParameter(":start", start));
+				cmd.Parameters.Add(new SqliteParameter(":end", end));
+				using (SqliteDataReader rdr = cmd.ExecuteReader())
+				{
+					while (rdr.Read())
+					{
+						// Was unable to identify a way to automate the DAO mapping with Mono.Data.Sqlite
+						yield return new Slot(rdr.GetInt64(rdr.GetOrdinal("id")),
+											  rdr.GetDateTime(rdr.GetOrdinal("start")),
+											  rdr.GetDateTime(rdr.GetOrdinal("end")),
+											  rdr.GetString(rdr.GetOrdinal("description")),
+											  rdr.GetString(rdr.GetOrdinal("project")));
+					}
+				}
+				cmd.Dispose();
+			}
+		}
+
+		public IEnumerable<Slot> GetSlots(string project, DateTime start, DateTime end)
+		{
+			using (SqliteCommand cmd = conn.CreateCommand())
+			{
+                cmd.CommandText = selectByProjectAndDateCommand;
+				cmd.Parameters.Add(new SqliteParameter(":project", project));
+				cmd.Parameters.Add(new SqliteParameter(":start", start));
+				cmd.Parameters.Add(new SqliteParameter(":end", end));
+				using (SqliteDataReader rdr = cmd.ExecuteReader())
+				{
+					while (rdr.Read())
+					{
+						// Was unable to identify a way to automate the DAO mapping with Mono.Data.Sqlite
+						yield return new Slot(rdr.GetInt64(rdr.GetOrdinal("id")),
+											  rdr.GetDateTime(rdr.GetOrdinal("start")),
+											  rdr.GetDateTime(rdr.GetOrdinal("end")),
+											  rdr.GetString(rdr.GetOrdinal("description")),
+											  rdr.GetString(rdr.GetOrdinal("project")));
+					}
+				}
+				cmd.Dispose();
+			}
+		}
+
+		public Slot GetSlotByID(long id)
         {
             Slot result = null;
             using (SqliteCommand cmd = conn.CreateCommand())

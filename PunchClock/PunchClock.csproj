@@ -94,6 +94,8 @@
     <Compile Include="Controllers\TimeController.cs" />
     <Compile Include="Models\ITimeModel.cs" />
     <Compile Include="Models\Slot.cs" />
+    <Compile Include="Controllers\FilterController.cs" />
+    <Compile Include="Controllers\ProjectController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />

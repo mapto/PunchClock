@@ -1,7 +1,7 @@
 var $ = {};
 $.ajax = function(param) {
   var type = param.type || 'GET';
-  var contentType = param.contentType || 'application/x-www-form-urlencoded; charset=UTF-8';
+  var contentType = param.contentType || 'application/json; charset=UTF-8';
 
   var request = new XMLHttpRequest();
   request.open(type, param.url, true);

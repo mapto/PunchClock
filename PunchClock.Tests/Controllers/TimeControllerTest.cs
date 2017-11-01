@@ -17,7 +17,8 @@ namespace PunchClock.Tests.Controllers
         public void SingleSlotOperations()
         {
             // Arrange
-            TimeController c = new TimeController();
+            TimeController tc = new TimeController();
+            FilterController fc = new FilterController();
             HttpResponseMessage response;
             long currentId;
             Slot foundSlot;
@@ -36,8 +37,8 @@ namespace PunchClock.Tests.Controllers
                 {"Description", desc},
                 {"Project", project},
             };
-            response = c.PostSlot(new FormDataCollection(data));
-            foundSlot = c.GetSlots().First();
+            response = tc.Post(new FormDataCollection(data));
+            foundSlot = fc.GetSlots().First();
             currentId = foundSlot.ID;
 
             // Assert
@@ -48,7 +49,7 @@ namespace PunchClock.Tests.Controllers
             Assert.AreEqual(foundSlot.Project, project);
 
             // Act
-            foundSlot = c.GetSlotById(currentId);
+            foundSlot = tc.Get(currentId);
 
             // Assert
             Assert.IsTrue(Math.Abs(foundSlot.Start.Subtract(start).TotalMinutes) < 1);
@@ -60,8 +61,8 @@ namespace PunchClock.Tests.Controllers
             string newDesc = "An updated activity description";
             data["ID"] = currentId.ToString();
             data["Description"] = newDesc;
-            response = c.PostSlot(new FormDataCollection(data));
-            foundSlot = c.GetSlotById(currentId);
+            response = tc.Post(new FormDataCollection(data));
+            foundSlot = tc.Get(currentId);
 
             // Assert
             Assert.IsTrue(response.IsSuccessStatusCode);
@@ -71,7 +72,7 @@ namespace PunchClock.Tests.Controllers
             Assert.AreEqual(foundSlot.Project, project);
 
             // Act
-            response = c.DeleteSlot(currentId);
+            response = tc.Delete(currentId);
 
             // Assert
             Assert.IsTrue(response.IsSuccessStatusCode);
@@ -79,7 +80,7 @@ namespace PunchClock.Tests.Controllers
             // Act
             try
             {
-                foundSlot = c.GetSlotById(currentId);
+                foundSlot = tc.Get(currentId);
                 Assert.Fail();
             }
             catch (HttpResponseException)

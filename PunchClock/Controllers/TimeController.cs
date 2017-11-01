@@ -6,27 +6,42 @@ using System.Net.Http.Formatting;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
-
 using PunchClock.Models;
 
 namespace PunchClock.Controllers
 {
-    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "GET,DELETE,POST")]
     public class TimeController : ApiController
     {
-        public Slot GetSlotById(long id)
+        private const string UNSPECIFIED_PROJECT = "Unspecified";
+        /*
+        public IEnumerable<Slot> GetAllSlots() {
+            FilterController filter = new FilterController();
+            return filter.GetSlots();
+        }
+        */
+
+        [AcceptVerbs("OPTIONS")]
+        public HttpResponseMessage Options()
         {
-            TimeModel timeService = TimeModel.getService();
-            Slot slot = timeService.GetSlotByID(id);
+            var resp = new HttpResponseMessage(HttpStatusCode.OK);
+            resp.Headers.Add("Access-Control-Allow-Origin", "*");
+            resp.Headers.Add("Access-Control-Allow-Methods", "GET,DELETE,POST");
+
+            return resp;
+        }
+
+        public Slot Get(long id)
+        {
+            var slot = TimeModel.getService().GetSlotByID(id);
             if (slot == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
             return slot;
-
         }
 
-        public HttpResponseMessage DeleteSlot(long id)
+        public HttpResponseMessage Delete(long id)
         {
             bool result = false;
             TimeModel timeService = TimeModel.getService();
@@ -41,16 +56,7 @@ namespace PunchClock.Controllers
             return new HttpResponseMessage(result ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
         }
 
-
-        public IEnumerable<Slot> GetSlots()
-        {
-            TimeModel timeService = TimeModel.getService();
-            var slots = timeService.GetSlots();
-
-            return slots;
-        }
-
-        public HttpResponseMessage PostSlot(FormDataCollection formData)
+        public HttpResponseMessage Post(FormDataCollection formData)
         {
             DateTime start, end;
             long id;
@@ -61,8 +67,15 @@ namespace PunchClock.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
+
+            if (start > end)
+            {
+                DateTime tmp = end;
+                end = start;
+                start = tmp;
+            }
             string description = formData["Description"];
-            string project = formData["Project"];
+            string project = formData["Project"].Trim().Length == 0 ? UNSPECIFIED_PROJECT : formData["Project"];
 
             TimeModel timeService = TimeModel.getService();
             Slot storedSlot = null;

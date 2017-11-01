@@ -18,7 +18,7 @@ class ListSlots extends Component {
 
   componentDidMount() {
     $.ajax({
-      url: this.props.url,
+      url: this.props.url + '/Filter',
       success: function(data) {
         this.setState({selected: "none", data: JSON.parse(data)});
       }.bind(this)
@@ -41,9 +41,10 @@ class ListSlots extends Component {
     }
     data = data.join("&");
     $.ajax({
-      url: this.props.url,
+      url: this.props.url + '/Time',
       type: 'POST',
       data: data,
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
       success: function(data) {
         // TODO: Instead of reloading everything from server, better update item locally.
         this.componentDidMount();
