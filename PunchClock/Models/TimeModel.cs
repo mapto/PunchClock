@@ -23,8 +23,6 @@ namespace PunchClock.Models
             description TEXT,
             project TEXT)";
         private const string selectAllProjectsCommand = "SELECT DISTINCT(project) FROM Slot";
-        private const string selectAllCommand = @"SELECT id,start,end,description,project FROM Slot
-                ORDER BY id DESC";
 	private const string selectByProjectCommand = @"SELECT id,start,end,description,project FROM Slot
                 WHERE project=:project ORDER BY id DESC";
 	private const string selectByDateCommand = @"SELECT id,start,end,description,project FROM Slot
@@ -38,20 +36,24 @@ namespace PunchClock.Models
                 OR  :start<=end   AND   end<=:end
                 OR  :start>=start AND   end>=:end
                 ORDER BY id DESC";
-	private const string selectByIdCommand = "SELECT id,start,end,description,project FROM Slot WHERE id=:id";
+        private const string selectAllCommand = @"SELECT id,start,end,description,project FROM Slot
+                ORDER BY id DESC";
+        private const string selectByIdCommand = "SELECT id,start,end,description,project FROM Slot WHERE id=:id";
         private const string selectIdByDataCommand = @"
             SELECT id FROM Slot 
-                WHERE start=:start AND end=:end AND
-                description=:description AND project=:project
-                ORDER BY id DESC LIMIT 1";
+            WHERE start=:start AND end=:end AND
+            description=:description AND project=:project
+            ORDER BY id DESC LIMIT 1";
         private const string deleteCommand = "DELETE FROM Slot WHERE id=:id";
-        private const string insertCommand = @"INSERT INTO Slot 
-                (start, end, description, project) 
-                VALUES(:start, :end ,:description, :project)";
-        private const string updateCommand = @"UPDATE Slot
-                SET start=:start, end=:end,
-                description=:description, project=:project
-                WHERE id=:id";
+        private const string insertCommand = @"
+            INSERT INTO Slot 
+            (start, end, description, project) 
+            VALUES(:start, :end ,:description, :project)";
+        private const string updateCommand = @"
+            UPDATE Slot
+            SET start=:start, end=:end,
+            description=:description, project=:project
+            WHERE id=:id";
 
         // This might be problematic with parallel server instances
         // Was not able to identify DBContext to work with Mono.Data.Sqlite.

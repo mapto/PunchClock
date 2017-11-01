@@ -12,13 +12,11 @@ class App extends Component {
     <h1 className="title">PunchClock <small>Time Registration</small></h1>
   </header>
   <div className="container">
-  <div className="row">
     <div className="panel panel-default">
       <div className="panel-body">
         <ListSlots url="http://localhost:8080/api" />
       </div>
     </div>
-  </div>
   </div>
 </div>
     );
