@@ -20,5 +20,5 @@ class SlotView extends Component {
   }
 }
 
-
+export { getDuration };
 export default SlotView;

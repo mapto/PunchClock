@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import SlotModify from './Modify.js';
-import SlotView from './View.js';
+import SlotView, {getDuration} from './View.js';
 
 import $ from './jquery-ajax-fake.js';
 
@@ -26,8 +26,35 @@ class ListSlots extends Component {
     this.updateFilter();
   }
 
+  durationCalc() {
+    var sum = 0;
+    for (var task of this.state.data) {
+      console.log(task);
+      sum += getDuration(new Date(task.End) - new Date(task.Start));
+    };
+    return sum
+      ? "a duration of " + sum + (sum === 1 ? " hour" : " hours")
+      : "no duration"
+  }
+
+  taskCount() {
+    var count = this.state.data.length
+
+    return count
+      ? (count === 1
+        ? "one task"
+        : "a total of " + count + " tasks") + " with " + this.durationCalc()
+      : "no tasks";
+  }
+
   reload() {
-    console.log(this.state.filter);
+    $.ajax({
+      url: this.props.url + '/Project',
+      success: function(data) {
+        this.setState({projects: ["All"].concat(JSON.parse(data))});
+      }.bind(this)
+    });
+
     $.ajax({
       url: this.props.url + '/Filter/' + this.state.filter.join("/"),
       success: function(data) {
@@ -38,12 +65,6 @@ class ListSlots extends Component {
   }
 
   componentWillMount() {
-    $.ajax({
-      url: this.props.url + '/Project',
-      success: function(data) {
-        this.setState({projects: ["All"].concat(JSON.parse(data))});
-      }.bind(this)
-    })
     this.reload();
   }
 
@@ -95,9 +116,9 @@ class ListSlots extends Component {
   }
 
   render() {
-    var filter = (
+    var header = (
 <div className="filter-form form-inline">
-  <div className="col-sm-offset-2 col-sm-1">
+  <div className="col-sm-offset-4 col-sm-1">
     <label htmlFor="filter" className="control-label">Filter</label>
     <input type="hidden" id="filter" className="form-control"/>
   </div>
@@ -126,6 +147,10 @@ class ListSlots extends Component {
     <label htmlFor="dayFilter" className="control-label">Day</label>
     <input type="number" id="dayFilter" onChange={this.updateFilter} className="form-control" min="1" max="31"/>
   </div>
+  <div className="col-sm-12">
+    <br/>
+    <p>Displaying {this.taskCount()}.</p>
+  </div>
 </div>
       )
     var component = this;
@@ -148,25 +173,21 @@ class ListSlots extends Component {
           );
         }
       });
-    } else {
-      children = (
-<li className="list-group-item">No timeslots.</li>
-      );
     }
 
     if (this.state.selected === "new") {
       var item = {
         ID: 0,
-        Start: new Date().toISOString(),
-        End: new Date().toISOString(),
+        Start: new Date().toISOString().substr(0,16),
+        End: new Date().toISOString().substr(0,16),
         Description: "New work slot",
         Project: "Unspecified"
       };
       return (
 <div>
   <div className="row">
-    <div className="col-sm-3">&nbsp;</div>
-    {filter}
+    {header}
+    <div className="col-sm-12">&nbsp;</div>
   </div>
   <ul className="list-group">      
     <div className="list-group-item" key={item.ID}>
@@ -181,10 +202,10 @@ class ListSlots extends Component {
       return (
 <div>
   <div className="row">
-    <div className="col-sm-3">
+    {header}
+    <div className="col-sm-12">
       <button onClick={this.createSlot} className="btn btn-default btn-block">Add Time Slot</button>       
     </div>
-    {filter}
   </div>
   <ul className="list-group">      
     {children}
