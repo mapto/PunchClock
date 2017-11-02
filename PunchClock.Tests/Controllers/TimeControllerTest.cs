@@ -1,12 +1,13 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Linq;
 using System.Web.Http;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using NUnit.Framework;
+
 using PunchClock.Controllers;
 using PunchClock.Models;
-using System.Net.Http.Formatting;
 
 namespace PunchClock.Tests.Controllers
 {

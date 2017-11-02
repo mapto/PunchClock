@@ -32,7 +32,7 @@ namespace PunchClock.Models
 
 		public override string ToString()
 		{
-			return this.Project + " (" + this.Start + ", " + this.End + ")";
+			return this.Project + "[" + this.ID + "] (" + this.Start + ", " + this.End + ")";
 		}
 
 		public override bool Equals(Object obj)
